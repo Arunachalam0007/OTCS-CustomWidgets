@@ -1,0 +1,16 @@
+{
+  "csui/models/server.module/server.module.collection": {
+    "modules": {
+      "otcss": {
+        "version": "1.0"
+      }
+    }
+  },
+  "csui/models/widget/widget.collection": {
+    "widgets": {
+      "otcss": [
+        "otcss/widgets/.hello"
+      ]
+    }
+  }
+}
