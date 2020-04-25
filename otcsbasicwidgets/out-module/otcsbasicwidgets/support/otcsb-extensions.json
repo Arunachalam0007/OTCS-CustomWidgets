@@ -10,6 +10,7 @@
     "widgets": {
       "otcsb": [
         "otcsb/widgets/.input.text.field",
+        "otcsb/widgets/dropdown",
         "otcsb/widgets/expending.tile",
         "otcsb/widgets/hello"
       ]

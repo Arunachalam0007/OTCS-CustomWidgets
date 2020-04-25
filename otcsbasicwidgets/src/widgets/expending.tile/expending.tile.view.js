@@ -13,7 +13,7 @@ define([
   var ContentView = Marionette.view.extend({
     className : 'myContent-View',
     el: this.$el,
-    render: function (){
+    onRender: function (){
       var subView = Marionette.ItemView.extend({
         className: 'myItem-View',
         template:ChildTemplate,

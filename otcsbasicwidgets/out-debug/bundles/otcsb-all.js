@@ -274,7 +274,7 @@ csui.define('otcsb/widgets/expending.tile/expending.tile.view',[
   var ContentView = Marionette.view.extend({
     className : 'myContent-View',
     el: this.$el,
-    render: function (){
+    onRender: function (){
       var subView = Marionette.ItemView.extend({
         className: 'myItem-View',
         template:ChildTemplate,
@@ -316,6 +316,90 @@ csui.define('json!otcsb/widgets/expending.tile/expending.tile.manifest.json',{
 }
 );
 
+
+/* START_TEMPLATE */
+csui.define('hbs!otcsb/widgets/dropdown/impl/dropdown',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
+var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<div class = \"dropdown\"></div>";
+}});
+Handlebars.registerPartial('otcsb_widgets_dropdown_impl_dropdown', t);
+return t;
+});
+/* END_TEMPLATE */
+;
+
+csui.define('css!otcsb/widgets/dropdown/impl/dropdown',[],function(){});
+// An application widget is exposed via a RequireJS module
+csui.define('otcsb/widgets/dropdown/dropdown.view',[
+  'csui/lib/underscore',                           // Cross-browser utility belt
+  'csui/lib/jquery',
+  'csui/lib/marionette',                           // MVC application support
+  'csui/lib/backbone',
+  "csui/controls/form/fields/selectfield.view",
+  'hbs!otcsb/widgets/dropdown/impl/dropdown',            // Template to render the HTML
+  'css!otcsb/widgets/dropdown/impl/dropdown'             // Stylesheet needed for this view
+], function (_, $, Marionette, Backbone, SelectFieldView, template) {
+
+  var DropdownView = Marionette.ItemView.extend({
+    className: 'shaDropDown',
+    template: template,
+    onRender: function () {
+      var DropDownContentRegion = new Marionette.Region({
+        el: this.$el
+      });
+      var DropView = new SelectFieldView({
+        id: 'shaSelecedFieldView',
+        collection: new Backbone.Collection([
+          {
+            id: 0,
+            name: 'EFILE'
+          },
+          {
+            id: 1,
+            name: 'ECASE'
+          },
+        ]),
+        model: new Backbone.Model({
+          options: {
+            isMultiFieldItem: false,
+            selected: true,
+            mode: 'read' // 'read', 'readonly', 'writeonly' ?
+          }
+        }),
+        mode: 'read',
+        alpaca: {
+          schema: {
+            title: "URL",
+            type: "string",
+          },
+          options: {
+            setRequiredFieldsEditable: false
+          }
+        }
+      });
+      DropView.on("field:changed", function (event) {
+        //alert(event.fieldid + ' field:changed, new value: ' + event.fieldvalue);
+        console.log(event.fieldid, 'field:changed', event.fieldvalue);
+      });
+      DropDownContentRegion.show(DropView);
+    }
+  });
+  return DropdownView;
+});
+
+
+csui.define('json!otcsb/widgets/dropdown/dropdown.manifest.json',{
+  "$schema": "http://opentext.com/cs/json-schema/draft-04/schema#",
+  "title": "dropdown",
+  "description": "Welcomes the current user.",
+  "kind": "tile",
+  "schema": {
+    "type": "object",
+    "properties": {}
+  }
+}
+);
+
 // Placeholder for the build target file; the name must be the same,
 // include public modules from this component
 
@@ -325,7 +409,9 @@ csui.define('bundles/otcsb-all',[
   'otcsb/widgets/.input.text.field/.input.text.field.view',
   'json!otcsb/widgets/.input.text.field/.input.text.field.manifest.json',
   'otcsb/widgets/expending.tile/expending.tile.view',
-  'json!otcsb/widgets/expending.tile/expending.tile.manifest.json'
+  'json!otcsb/widgets/expending.tile/expending.tile.manifest.json',
+  'otcsb/widgets/dropdown/dropdown.view',
+  'json!otcsb/widgets/dropdown/dropdown.manifest.json'
 ], {});
 
 csui.require([
