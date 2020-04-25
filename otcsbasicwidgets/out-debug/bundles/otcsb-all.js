@@ -205,7 +205,7 @@ csui.define('otcsb/widgets/.input.text.field/.input.text.field.view',[
       className: 'otcsb--input-text-field',
       template: template,
       onRender: function (){
-        var model = new Backbone.Model({ data: 'First Name' }),
+        var model = new Backbone.Model({ data: 'Type your Name' }),
         contentRegion = new Marionette.Region({el: this.$el}),
         field = new TextFieldView({ 
           id: 'firstName',
@@ -235,6 +235,87 @@ csui.define('json!otcsb/widgets/.input.text.field/.input.text.field.manifest.jso
 }
 );
 
+
+/* START_TEMPLATE */
+csui.define('hbs!otcsb/widgets/expending.tile/impl/expending.tile',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
+var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<div class=\"Expending\"></div>";
+}});
+Handlebars.registerPartial('otcsb_widgets_expending.tile_impl_expending.tile', t);
+return t;
+});
+/* END_TEMPLATE */
+;
+
+/* START_TEMPLATE */
+csui.define('hbs!otcsb/widgets/expending.tile/impl/childTemplate',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
+var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<div class=\"myChildTemp\">\r\n    <h1>Hello World</h1>\r\n</div>";
+}});
+Handlebars.registerPartial('otcsb_widgets_expending.tile_impl_childTemplate', t);
+return t;
+});
+/* END_TEMPLATE */
+;
+
+csui.define('css!otcsb/widgets/expending.tile/impl/expending.tile',[],function(){});
+csui.define('otcsb/widgets/expending.tile/expending.tile.view',[
+  'csui/lib/underscore',
+  'csui/lib/jquery',
+  'csui/lib/backbone',
+  'csui/lib/marionette',
+  'csui/controls/tile/tile.view',
+  'csui/controls/tile/behaviors/expanding.behavior',
+  'hbs!otcsb/widgets/expending.tile/impl/expending.tile',
+  'hbs!otcsb/widgets/expending.tile/impl/childTemplate',
+  'css!otcsb/widgets/expending.tile/impl/expending.tile'
+],function (_,$,Backbone,Marionette,TileView,ExpandingBehavior,ExpendingTemplate,ChildTemplate){
+
+  var ContentView = Marionette.view.extend({
+    className : 'myContent-View',
+    el: this.$el,
+    render: function (){
+      var subView = Marionette.ItemView.extend({
+        className: 'myItem-View',
+        template:ChildTemplate,
+      });
+      var contentRegion1 = new Marionette.Region({
+        el:this.$el
+      });
+      contentRegion1.show(new subView());
+    }
+  }); 
+
+  var ExpandingTileView = TileView.extend({
+    icon: 'title-recentlyaccessed',
+    className: 'ExpandingTile',
+    title: 'Sample Expandable Tile',
+    contentView: ContentView,
+    behaviors: {
+      Expanding: {
+        behaviorClass: ExpandingBehavior,
+        expandedView: ContentView,
+        titleBarIcon: 'title-recentlyaccessed',
+        dialogTitle: 'Expandable Tile'
+      }
+    }
+  });
+
+  return ExpandingTileView;
+});
+
+csui.define('json!otcsb/widgets/expending.tile/expending.tile.manifest.json',{
+  "$schema": "http://opentext.com/cs/json-schema/draft-04/schema#",
+  "title": "expendingtile",
+  "description": "Welcomes the current user.",
+  "kind": "tile",
+  "schema": {
+    "type": "object",
+    "properties": {}
+  }
+}
+);
+
 // Placeholder for the build target file; the name must be the same,
 // include public modules from this component
 
@@ -242,7 +323,9 @@ csui.define('bundles/otcsb-all',[
   'otcsb/widgets/hello/hello.view',
   'json!otcsb/widgets/hello/hello.manifest.json',
   'otcsb/widgets/.input.text.field/.input.text.field.view',
-  'json!otcsb/widgets/.input.text.field/.input.text.field.manifest.json'
+  'json!otcsb/widgets/.input.text.field/.input.text.field.manifest.json',
+  'otcsb/widgets/expending.tile/expending.tile.view',
+  'json!otcsb/widgets/expending.tile/expending.tile.manifest.json'
 ], {});
 
 csui.require([

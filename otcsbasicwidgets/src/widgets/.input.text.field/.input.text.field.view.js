@@ -14,7 +14,7 @@ define([
       className: 'otcsb--input-text-field',
       template: template,
       onRender: function (){
-        var model = new Backbone.Model({ data: 'First Name' }),
+        var model = new Backbone.Model({ data: 'Type your Name' }),
         contentRegion = new Marionette.Region({el: this.$el}),
         field = new TextFieldView({ 
           id: 'firstName',
