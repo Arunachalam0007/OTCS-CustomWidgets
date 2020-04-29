@@ -13,7 +13,7 @@ define([
     className: 'shaDropDown',
     template: template,
     onRender: function () {
-      var DropDownContentRegion = new Marionette.Region({
+       var DropDownContentRegion = new Marionette.Region({
         el: this.$el
       });
       var DropView = new SelectFieldView({

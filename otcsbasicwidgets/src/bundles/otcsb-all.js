@@ -9,7 +9,11 @@ define([
   'otcsb/widgets/expending.tile/expending.tile.view',
   'json!otcsb/widgets/expending.tile/expending.tile.manifest.json',
   'otcsb/widgets/dropdown/dropdown.view',
-  'json!otcsb/widgets/dropdown/dropdown.manifest.json'
+  'json!otcsb/widgets/dropdown/dropdown.manifest.json',
+  'otcsb/widgets/dialogbox/dialogbox.view',
+  'json!otcsb/widgets/dialogbox/dialogbox.manifest.json',
+  'otcsb/widgets/aktvconnector/aktvconnector.view',
+  'json!otcsb/widgets/aktvconnector/aktvconnector.manifest.json'
 ], {});
 
 require([

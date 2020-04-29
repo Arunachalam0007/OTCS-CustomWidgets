@@ -344,7 +344,7 @@ csui.define('otcsb/widgets/dropdown/dropdown.view',[
     className: 'shaDropDown',
     template: template,
     onRender: function () {
-      var DropDownContentRegion = new Marionette.Region({
+       var DropDownContentRegion = new Marionette.Region({
         el: this.$el
       });
       var DropView = new SelectFieldView({
@@ -400,6 +400,277 @@ csui.define('json!otcsb/widgets/dropdown/dropdown.manifest.json',{
 }
 );
 
+csui.define('otcsb/widgets/dialogbox/impl/dialogbox.model',[
+  // MVC component support
+  'csui/lib/backbone',
+  // CS REST API URL parsing and combining
+  'csui/utils/url'
+], function (Backbone, Url) {
+  'use strict';
+
+  var DialogboxModel = Backbone.Model.extend({
+    // Declare model properties with default values
+    defaults: {
+      name: 'Unnamed'
+    },
+
+    // Constructor gives an explicit name to the object in the debugger
+    constructor: function DialogboxModel(attributes, options) {
+      Backbone.Model.prototype.constructor.apply(this, arguments);
+
+      // Enable this model for communication with the CS REST API
+      if (options && options.connector) {
+        options.connector.assignTo(this);
+      }
+    },
+
+    // Computes the REST API URL using the connection options
+    url: function () {
+      // /auth returns information about the authenticated user
+      return Url.combine(this.connector.connection.url, '/auth');
+    },
+
+    // Massage the server response, so that it looks like object attributes
+    parse: function (response) {
+      // All attributes are placed below the `data` key
+      return response.data;
+    }
+  });
+
+  return DialogboxModel;
+});
+
+csui.define('otcsb/widgets/dialogbox/impl/dialogbox.model.factory',[
+  'csui/utils/contexts/factories/factory',   // Factory base to inherit from
+  'csui/utils/contexts/factories/connector', // Factory for the server connector
+  'otcsb/widgets/dialogbox/impl/dialogbox.model'     // Model to create the factory for
+], function (ModelFactory, ConnectorFactory, DialogboxModel) {
+  'use strict';
+
+  var DialogboxModelFactory = ModelFactory.extend({
+    // Unique prefix of the default model instance, when this model is placed
+    // to a context to be shared by multiple widgets
+    propertyPrefix: 'dialogbox',
+
+    constructor: function DialogboxModelFactory(context, options) {
+      ModelFactory.prototype.constructor.apply(this, arguments);
+
+      // Obtain the server connector from the application context to share
+      // the server connection with the rest of the application; include
+      // the options, which can contain settings for dependent factories
+      var connector = context.getObject(ConnectorFactory, options);
+
+      // Expose the model instance in the `property` key on this factory
+      // instance to be used by the context
+      this.property = new DialogboxModel(undefined, {
+        connector: connector
+      });
+    },
+
+    fetch: function (options) {
+      // Just fetch the model exposed by this factory
+      return this.property.fetch(options);
+    }
+  });
+
+  return DialogboxModelFactory;
+});
+
+// Lists explicit locale mappings and fallbacks
+
+csui.define('otcsb/widgets/dialogbox/impl/nls/lang',{
+  // Always load the root bundle for the default locale (en-us)
+  "root": true,
+  // Do not load English locale bundle provided by the root bundle
+  "en-us": false,
+  "en": false
+});
+
+// Defines localizable strings in the default language (English)
+
+csui.define('otcsb/widgets/dialogbox/impl/nls/root/lang',{
+  helloMessage: 'Hello {0} {1}!',
+  waitMessage: 'One moment, please...'
+});
+
+
+
+/* START_TEMPLATE */
+csui.define('hbs!otcsb/widgets/dialogbox/impl/dialogbox',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
+var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "<span>"
+    + this.escapeExpression(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"message","hash":{}}) : helper)))
+    + "</span>\r\n";
+}});
+Handlebars.registerPartial('otcsb_widgets_dialogbox_impl_dialogbox', t);
+return t;
+});
+/* END_TEMPLATE */
+;
+
+csui.define('css!otcsb/widgets/dialogbox/impl/dialogbox',[],function(){});
+// An application widget is exposed via a RequireJS module
+csui.define('otcsb/widgets/dialogbox/dialogbox.view',[
+  'csui/lib/underscore',                           // Cross-browser utility belt
+  'csui/lib/marionette',                           // MVC application support
+  'otcsb/widgets/dialogbox/impl/dialogbox.model.factory',  // Factory for the data model
+  'i18n!otcsb/widgets/dialogbox/impl/nls/lang',  // Use localizable texts
+  'hbs!otcsb/widgets/dialogbox/impl/dialogbox',            // Template to render the HTML
+  'css!otcsb/widgets/dialogbox/impl/dialogbox'             // Stylesheet needed for this view
+], function (_, Marionette, DialogboxModelFactory, lang, template) {
+  'use strict';
+
+  // An application widget is a view, because it should render a HTML fragment
+  var DialogboxView = Marionette.ItemView.extend({
+    // Outermost parent element should contain a unique widget-specific class
+    className: 'otcsb--dialogbox panel panel-default',
+
+    // Template method rendering the HTML for the view
+    template: template,
+
+    // Mix additional properties in the template input data
+    templateHelpers: function () {
+      // Say hello to the authenticated user, if the model has been fetched,
+      // otherwise show a waiting message
+      var message = this.model.get('id') ?
+                    _.str.sformat(lang.helloMessage,
+                        this.model.get('first_name'),
+                        this.model.get('last_name')) :
+                    lang.waitMessage;
+      return {
+        message: message
+      };
+    },
+
+    // Constructor gives an explicit name to the object in the debugger and
+    // can update the options for the parent view, which `initialize` cannot
+    constructor: function DialogboxView(options) {
+      // Obtain the model with the data shown by this view; using the model
+      // factory with the context makes the model instance not only shareable
+      // with other widgets through the context, but also fetched at the same
+      // moment as the other models.
+      options.model = options.context.getModel(DialogboxModelFactory);
+
+      // Models and collections passed via options to the parent constructor
+      // are wired to
+      Marionette.ItemView.prototype.constructor.call(this, options);
+
+      // Whenever properties of the model change, re-render the view
+      this.listenTo(this.model, 'change', this.render);
+    }
+  });
+
+  return DialogboxView;
+});
+
+
+csui.define('json!otcsb/widgets/dialogbox/dialogbox.manifest.json',{
+  "$schema": "http://opentext.com/cs/json-schema/draft-04/schema#",
+  "title": "dialogbox",
+  "description": "Welcomes the current user.",
+  "kind": "tile",
+  "schema": {
+    "type": "object",
+    "properties": {}
+  }
+}
+);
+
+
+/* START_TEMPLATE */
+csui.define('hbs!otcsb/widgets/aktvconnector/impl/aktvconnector',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
+var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    var helper;
+
+  return "<span>"
+    + this.escapeExpression(((helper = (helper = helpers.message || (depth0 != null ? depth0.message : depth0)) != null ? helper : helpers.helperMissing),(typeof helper === "function" ? helper.call(depth0,{"name":"message","hash":{}}) : helper)))
+    + "</span>\r\n";
+}});
+Handlebars.registerPartial('otcsb_widgets_aktvconnector_impl_aktvconnector', t);
+return t;
+});
+/* END_TEMPLATE */
+;
+
+csui.define('css!otcsb/widgets/aktvconnector/impl/aktvconnector',[],function(){});
+csui.define('otcsb/widgets/aktvconnector/aktvconnector.view',[
+  'csui/lib/jquery',
+'csui/lib/marionette',
+'csui/lib/backbone',
+'csui/utils/contexts/page/page.context',
+'hbs!otcsb/widgets/aktvconnector/impl/aktvconnector',
+'csui/controls/form/fields/nodepickerfield.view',
+'css!otcsb/widgets/aktvconnector/impl/aktvconnector',
+],function($,Marionette,Backbone,PageContext,template,NodePickerFieldView){
+
+  var aktvconnectorView = Marionette.ItemView.extend({
+    className: 'aktv',
+    template: template,
+    onRender: function(){
+    
+      var pageContext = new PageContext({
+        factories: {
+          connector: {
+            connection: {
+              url: 'http://localhost/otcs/cs.exe/api/v1/',
+              supportPath: 'D:\OPENTEXT\support',
+              session: {
+                ticket: 'dummy'
+              }
+            }
+          }
+        }
+      });
+      
+      var contentRegionNodePickerField = new Marionette.Region({
+        el: this.$el
+      }),
+      nodePickerField = new NodePickerFieldView({
+        context: pageContext,
+        model: new Backbone.Model({
+          data: 5770,
+          options: {
+            type: "otcs_node_picker",
+            mode: 'read',
+            type_control: {
+              parameters: {
+                name: "Classic 3000/3 Jet",
+                select_types: []
+              }
+            }
+          }
+        }),
+        id: 'nodePickerField',
+        parent: null
+      });
+
+  nodePickerField.on("field:changed", function (event) {
+    //        alert(event.fieldid + ' field:changed, new value: ' + event.fieldvalue);
+    console.log(event.fieldid, 'field:changed', event.fieldvalue);
+
+  });
+
+  contentRegionNodePickerField.show(nodePickerField);
+     
+    }
+  });
+  return aktvconnectorView;
+});
+
+csui.define('json!otcsb/widgets/aktvconnector/aktvconnector.manifest.json',{
+  "$schema": "http://opentext.com/cs/json-schema/draft-04/schema#",
+  "title": "aktvconnector",
+  "description": "Welcomes the current user.",
+  "kind": "tile",
+  "schema": {
+    "type": "object",
+    "properties": {}
+  }
+}
+);
+
 // Placeholder for the build target file; the name must be the same,
 // include public modules from this component
 
@@ -411,7 +682,11 @@ csui.define('bundles/otcsb-all',[
   'otcsb/widgets/expending.tile/expending.tile.view',
   'json!otcsb/widgets/expending.tile/expending.tile.manifest.json',
   'otcsb/widgets/dropdown/dropdown.view',
-  'json!otcsb/widgets/dropdown/dropdown.manifest.json'
+  'json!otcsb/widgets/dropdown/dropdown.manifest.json',
+  'otcsb/widgets/dialogbox/dialogbox.view',
+  'json!otcsb/widgets/dialogbox/dialogbox.manifest.json',
+  'otcsb/widgets/aktvconnector/aktvconnector.view',
+  'json!otcsb/widgets/aktvconnector/aktvconnector.manifest.json'
 ], {});
 
 csui.require([
