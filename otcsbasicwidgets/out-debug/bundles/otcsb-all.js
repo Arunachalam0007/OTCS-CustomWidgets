@@ -597,19 +597,19 @@ return t;
 csui.define('css!otcsb/widgets/aktvconnector/impl/aktvconnector',[],function(){});
 csui.define('otcsb/widgets/aktvconnector/aktvconnector.view',[
   'csui/lib/jquery',
-'csui/lib/marionette',
-'csui/lib/backbone',
-'csui/utils/contexts/page/page.context',
-'hbs!otcsb/widgets/aktvconnector/impl/aktvconnector',
-'csui/controls/form/fields/nodepickerfield.view',
-'css!otcsb/widgets/aktvconnector/impl/aktvconnector',
-],function($,Marionette,Backbone,PageContext,template,NodePickerFieldView){
+  'csui/lib/marionette',
+  'csui/lib/backbone',
+  'csui/utils/contexts/page/page.context',
+  'hbs!otcsb/widgets/aktvconnector/impl/aktvconnector',
+  'csui/controls/form/fields/nodepickerfield.view',
+  'css!otcsb/widgets/aktvconnector/impl/aktvconnector',
+], function ($, Marionette, Backbone, PageContext, template, NodePickerFieldView) {
 
   var aktvconnectorView = Marionette.ItemView.extend({
     className: 'aktv',
     template: template,
-    onRender: function(){
-    
+    onRender: function () {
+
       var pageContext = new PageContext({
         factories: {
           connector: {
@@ -623,37 +623,37 @@ csui.define('otcsb/widgets/aktvconnector/aktvconnector.view',[
           }
         }
       });
-      
+
       var contentRegionNodePickerField = new Marionette.Region({
         el: this.$el
       }),
-      nodePickerField = new NodePickerFieldView({
-        context: pageContext,
-        model: new Backbone.Model({
-          data: 5770,
-          options: {
-            type: "otcs_node_picker",
-            mode: 'read',
-            type_control: {
-              parameters: {
-                name: "Classic 3000/3 Jet",
-                select_types: []
+        nodePickerField = new NodePickerFieldView({
+          context: pageContext,
+          model: new Backbone.Model({
+            data: 5770,
+            options: {
+              type: "otcs_node_picker",
+              mode: 'read',
+              type_control: {
+                parameters: {
+                  name: "Classic 3000/3 Jet",
+                  select_types: []
+                }
               }
             }
-          }
-        }),
-        id: 'nodePickerField',
-        parent: null
+          }),
+          id: 'nodePickerField',
+          parent: null
+        });
+
+      nodePickerField.on("field:changed", function (event) {
+        //        alert(event.fieldid + ' field:changed, new value: ' + event.fieldvalue);
+        console.log(event.fieldid, 'field:changed', event.fieldvalue);
+
       });
 
-  nodePickerField.on("field:changed", function (event) {
-    //        alert(event.fieldid + ' field:changed, new value: ' + event.fieldvalue);
-    console.log(event.fieldid, 'field:changed', event.fieldvalue);
+      contentRegionNodePickerField.show(nodePickerField);
 
-  });
-
-  contentRegionNodePickerField.show(nodePickerField);
-     
     }
   });
   return aktvconnectorView;
