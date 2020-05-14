@@ -1,0 +1,18 @@
+#title-header {
+    padding: .35em;
+	font-size: 1.75em;
+	font-weight: 300;
+	text-align: center;
+	position: relative;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	background-color: #dfe7ea;
+}
+
+.fieldLabel{
+    height: 1em;
+}
+.fieldLabel, .selectDocument{ 
+    float:left;/*Add float left*/
+}

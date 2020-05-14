@@ -1,0 +1,7 @@
+{
+  "generator-csui-extension": {
+    "projectName": "otcswidgets",
+    "projectDescription": "otcs all widgets",
+    "modulePrefix": "otcsw"
+  }
+}

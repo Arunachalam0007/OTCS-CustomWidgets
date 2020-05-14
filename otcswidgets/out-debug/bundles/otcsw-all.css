@@ -1,0 +1,55 @@
+#title-header {
+    padding: .35em;
+	font-size: 1.75em;
+	font-weight: 300;
+	text-align: center;
+	position: relative;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
+	background-color: #dfe7ea;
+}
+
+.fieldLabel{
+    height: 1em;
+}
+.fieldLabel, .selectDocument{ 
+    float:left;/*Add float left*/
+}.binf-widgets .otcsw--noteview {
+  /* Make more space around the welcome message than the default Bootstrap
+     panel offers */
+  padding: 1em;
+  /* Make the panel look nicer */
+  background-color: #fff;
+  /* Fill up the parent tile extents. */
+  width: 100%;
+  height: 100%;
+}
+#tilte-header{
+	background-color: #1d5011;
+}
+.column1 {
+  float: left;
+  width: 33.33%;
+  background-color: aliceblue;
+  height: 470px;
+}
+
+.column2 {
+  float: left;
+  width: 33.33%;
+  background-color:beige;
+  height: 470px;
+}
+.column3 {
+  float: left;
+  width: 33.33%;
+  background-color: cornsilk;
+  height: 470px;
+}
+
+.row::after {
+  content: "";
+  display: table;
+  clear: both;
+}
