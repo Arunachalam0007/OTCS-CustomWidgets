@@ -7,6 +7,7 @@ define(['csui/lib/jquery.mockjax'], function (mockjax) {
     enable: function () {
       mocks.push(mockjax({
         url: '//server/otcs/cs/api/v1/auth',
+        ticket:'',
         responseText: {
           data: {
             "id": 1,

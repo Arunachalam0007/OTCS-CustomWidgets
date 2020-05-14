@@ -38,7 +38,7 @@ define([
       // factory with the context makes the model instance not only shareable
       // with other widgets through the context, but also fetched at the same
       // moment as the other models.
-      options.model = options.context.getModel(HelloModelFactory);
+      options.model = options.context.getModel( );
 
       // Models and collections passed via options to the parent constructor
       // are wired to

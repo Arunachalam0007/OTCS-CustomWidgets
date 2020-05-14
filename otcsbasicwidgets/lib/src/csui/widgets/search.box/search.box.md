@@ -2,9 +2,7 @@
 
 Shows a text-box to enter a simple full-text search query.
 
-A control waiting for the search query to be set and executing it is expected
-to be placed on the page, otherwise there would be no effect.
-
+A   
 ### Example
 
 ```javascript
