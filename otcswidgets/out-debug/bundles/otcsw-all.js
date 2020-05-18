@@ -78,13 +78,15 @@ csui.define('otcsw/widgets/noteview/impl/noteview.model.factory',[
 /* START_TEMPLATE */
 csui.define('hbs!otcsw/widgets/noteview/impl/notecomments',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
 var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<h1>Hello Vashisht</h1>";
+    return "<h2 id=\"title-header\">View Document One</h2>\r\n<h1>Hello Vashisht</h1>";
 }});
 Handlebars.registerPartial('otcsw_widgets_noteview_impl_notecomments', t);
 return t;
 });
 /* END_TEMPLATE */
 ;
+
+csui.define('css!otcsw/widgets/noteview/impl/utils/headerlayout',[],function(){});
 csui.define('otcsw/widgets/noteview/impl/leftRegion/notecomments.view',[
     'csui/lib/marionette',
     'csui/lib/backbone',
@@ -92,6 +94,8 @@ csui.define('otcsw/widgets/noteview/impl/leftRegion/notecomments.view',[
     'csui/controls/rich.text.editor/rich.text.editor',
     "csui/controls/form/fields/selectfield.view",
     'hbs!otcsw/widgets/noteview/impl/notecomments',
+    'css!otcsw/widgets/noteview/impl/utils/headerlayout'             // Stylesheet needed for this view
+
 ], function(Marionette, Backbone, $, RichTextEditor, SelectFieldView, template) {
 
     var NoteCommentsView = Marionette.ItemView.extend({
@@ -143,15 +147,13 @@ csui.define('otcsw/widgets/noteview/impl/utils/Utils',[
 /* START_TEMPLATE */
 csui.define('hbs!otcsw/widgets/noteview/impl/viewerone',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
 var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<h2 id=\"title-header\">View Document</h2>\r\n<div id=\"selectDocument\"></div>\r\n<div id=\"viewer\"></div>";
+    return "<h2 id=\"title-header\">View Document Two</h2>\r\n<div class = \"flex-containers\">\r\n    <div class=\"selectDocument-fieldname\">SelectDocument:  </div>\r\n    <div id=\"selectDocument\"></div>\r\n</div>\r\n<div id=\"viewer\"></div>";
 }});
 Handlebars.registerPartial('otcsw_widgets_noteview_impl_viewerone', t);
 return t;
 });
 /* END_TEMPLATE */
 ;
-
-csui.define('css!otcsw/widgets/noteview/impl/utils/headerlayout',[],function(){});
 csui.define('otcsw/widgets/noteview/impl/centerRegion/viewerone.view',[
     'csui/lib/marionette',
     'csui/lib/backbone',
@@ -185,7 +187,7 @@ csui.define('otcsw/widgets/noteview/impl/centerRegion/viewerone.view',[
 /* START_TEMPLATE */
 csui.define('hbs!otcsw/widgets/noteview/impl/rightregion/viewertwo',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
 var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<h1>Hello Arun</h1>";
+    return "<h2 id=\"title-header\">View Document Three</h2>\r\n<h1>Hello Arun</h1>";
 }});
 Handlebars.registerPartial('otcsw_widgets_noteview_impl_rightregion_viewertwo', t);
 return t;
@@ -195,6 +197,8 @@ return t;
 csui.define('otcsw/widgets/noteview/impl/rightregion/viewertwo.view',[
     'csui/lib/marionette',
     'hbs!otcsw/widgets/noteview/impl/rightregion/viewertwo',
+    'css!otcsw/widgets/noteview/impl/utils/headerlayout'             // Stylesheet needed for this view
+
 ],  function (Marionette, Template) {
 
     var ViewerTwoView = Marionette.ItemView.extend({
@@ -230,7 +234,7 @@ csui.define('otcsw/widgets/noteview/impl/nls/root/lang',{
 /* START_TEMPLATE */
 csui.define('hbs!otcsw/widgets/noteview/impl/noteview',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
 var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
-    return "<div class=\"row\">\r\n    <div class=\"column1\" id=\"leftRegion\">one</div>\r\n    <div class=\"column2\" id=\"centerRegion\">two</div>\r\n    <div class=\"column3\" id=\"rightRegion\">three</div>\r\n</div>";
+    return "<div class=\"row\">\r\n    <div class =\"flex-container\">\r\n        <div class=\"column1\" id=\"leftRegion\">one</div>\r\n        <div class=\"column2\" id=\"centerRegion\">two</div>\r\n        <div class=\"column3\" id=\"rightRegion\">three</div>\r\n    </div>\r\n</div>";
 }});
 Handlebars.registerPartial('otcsw_widgets_noteview_impl_noteview', t);
 return t;

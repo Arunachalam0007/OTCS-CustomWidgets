@@ -1,6 +1,8 @@
 define([
     'csui/lib/marionette',
     'hbs!otcsw/widgets/noteview/impl/rightregion/viewertwo',
+    'css!otcsw/widgets/noteview/impl/utils/headerlayout'             // Stylesheet needed for this view
+
 ],  function (Marionette, Template) {
 
     var ViewerTwoView = Marionette.ItemView.extend({

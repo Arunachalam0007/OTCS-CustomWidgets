@@ -5,6 +5,8 @@ define([
     'csui/controls/rich.text.editor/rich.text.editor',
     "csui/controls/form/fields/selectfield.view",
     'hbs!otcsw/widgets/noteview/impl/notecomments',
+    'css!otcsw/widgets/noteview/impl/utils/headerlayout'             // Stylesheet needed for this view
+
 ], function(Marionette, Backbone, $, RichTextEditor, SelectFieldView, template) {
 
     var NoteCommentsView = Marionette.ItemView.extend({

@@ -10,9 +10,32 @@
 	background-color: #dfe7ea;
 }
 
-.fieldLabel{
+.flex-containers {
+	display: flex;
+	margin: 0;
+	padding: 0;
+  }
+
+  .flex-containers > div {
+	padding: 10px;
+  }
+
+
+.selectDocument-fieldname{
+	text-align: center;
+}
+#selectDocument > div {
+	display: flex;
+    font: inherit;
+}
+  
+#selectDocument > span {
+	display: flex;
+	text-align: start;
+}
+/* .fieldLabel{
     height: 1em;
 }
 .fieldLabel, .selectDocument{ 
-    float:left;/*Add float left*/
-}
+    float:left;/*Add float left*
+} */
