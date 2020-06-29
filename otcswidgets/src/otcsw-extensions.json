@@ -9,7 +9,8 @@
   "csui/models/widget/widget.collection": {
     "widgets": {
       "otcsw": [
-        "otcsw/widgets/noteview"
+        "otcsw/widgets/noteview",
+        "otcsw/widgets/testing"
       ]
     }
   }

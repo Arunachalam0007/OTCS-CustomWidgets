@@ -4,7 +4,9 @@
 define([
   // add public files for this module here
   'otcsw/widgets/noteview/noteview.view',
-  'json!otcsw/widgets/noteview/noteview.manifest.json'
+  'json!otcsw/widgets/noteview/noteview.manifest.json',
+  "otcsw/widgets/testing/testing.view",
+  'json!otcsw/widgets/testing/testing.manifest.json',
 ], {});
 
 require([

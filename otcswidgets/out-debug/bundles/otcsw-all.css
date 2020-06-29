@@ -98,4 +98,30 @@
   content: "";
   display: table;
   clear: both;
+}.binf-widgets .otcsw--testing {
+  /* Make more space around the welcome message than the default Bootstrap
+     panel offers */
+  padding: 1em;
+  /* Make the panel look nicer */
+  background-color: #fff;
+  /* Fill up the parent tile extents. */
+  width: 100%;
+  height: 100%;
+}
+.row {
+    display: flex;
+    background-color: white;
+}
+.column1 {
+  float: left;
+  width: 100%;
+  background-color: aliceblue;
+  height: 470px;
+}
+
+.column2 {
+  float: left;
+  width: 100%;
+  background-color:beige;
+  height: 470px;
 }

@@ -293,13 +293,214 @@ csui.define('json!otcsw/widgets/noteview/noteview.manifest.json',{
 }
 );
 
+csui.define('otcsw/widgets/testing/impl/testing.model',[
+  // MVC component support
+  'csui/lib/backbone',
+  // CS REST API URL parsing and combining
+  'csui/utils/url'
+], function (Backbone, Url) {
+  'use strict';
+
+  var TestingModel = Backbone.Model.extend({
+    // Declare model properties with default values
+    defaults: {
+      name: 'Unnamed'
+    },
+
+    // Constructor gives an explicit name to the object in the debugger
+    constructor: function TestingModel(attributes, options) {
+      Backbone.Model.prototype.constructor.apply(this, arguments);
+
+      // Enable this model for communication with the CS REST API
+      if (options && options.connector) {
+        options.connector.assignTo(this);
+      }
+    },
+
+    // Computes the REST API URL using the connection options
+    url: function () {
+      // /auth returns information about the authenticated user
+      return Url.combine(this.connector.connection.url, '/auth');
+    },
+
+    // Massage the server response, so that it looks like object attributes
+    parse: function (response) {
+      // All attributes are placed below the `data` key
+      return response.data;
+    }
+  });
+
+  return TestingModel;
+});
+
+csui.define('otcsw/widgets/testing/impl/testing.model.factory',[
+  'csui/utils/contexts/factories/factory',   // Factory base to inherit from
+  'csui/utils/contexts/factories/connector', // Factory for the server connector
+  'otcsw/widgets/testing/impl/testing.model'     // Model to create the factory for
+], function (ModelFactory, ConnectorFactory, TestingModel) {
+  'use strict';
+
+  var TestingModelFactory = ModelFactory.extend({
+    // Unique prefix of the default model instance, when this model is placed
+    // to a context to be shared by multiple widgets
+    propertyPrefix: 'testing',
+
+    constructor: function TestingModelFactory(context, options) {
+      ModelFactory.prototype.constructor.apply(this, arguments);
+
+      // Obtain the server connector from the application context to share
+      // the server connection with the rest of the application; include
+      // the options, which can contain settings for dependent factories
+      var connector = context.getObject(ConnectorFactory, options);
+
+      // Expose the model instance in the `property` key on this factory
+      // instance to be used by the context
+      this.property = new TestingModel(undefined, {
+        connector: connector
+      });
+    },
+
+    fetch: function (options) {
+      // Just fetch the model exposed by this factory
+      return this.property.fetch(options);
+    }
+  });
+
+  return TestingModelFactory;
+});
+
+// Lists explicit locale mappings and fallbacks
+
+csui.define('otcsw/widgets/testing/impl/nls/lang',{
+  // Always load the root bundle for the default locale (en-us)
+  "root": true,
+  // Do not load English locale bundle provided by the root bundle
+  "en-us": false,
+  "en": false
+});
+
+// Defines localizable strings in the default language (English)
+
+csui.define('otcsw/widgets/testing/impl/nls/root/lang',{
+  helloMessage: 'Hello {0} {1}!',
+  waitMessage: 'One moment, please...'
+});
+
+
+
+/* START_TEMPLATE */
+csui.define('hbs!otcsw/widgets/testing/impl/testing',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
+var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<div class=\"row\">\r\n    <div class=\"column1\" id=\"leftRegion\"></div>\r\n    <div class=\"column2\" id=\"rightRegion\">Teja</div>\r\n</div>";
+}});
+Handlebars.registerPartial('otcsw_widgets_testing_impl_testing', t);
+return t;
+});
+/* END_TEMPLATE */
+;
+
+/* START_TEMPLATE */
+csui.define('hbs!otcsw/widgets/testing/impl/left',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
+var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<h1>hello</h1>\r\n<button class=\"myCollapseBtn\" id=\"left\">Collapse</button>\r\n";
+}});
+Handlebars.registerPartial('otcsw_widgets_testing_impl_left', t);
+return t;
+});
+/* END_TEMPLATE */
+;
+
+/* START_TEMPLATE */
+csui.define('hbs!otcsw/widgets/testing/impl/right',['module','hbs','csui/lib/handlebars'], function( module, hbs, Handlebars ){ 
+var t = Handlebars.template({"compiler":[6,">= 2.0.0-beta.1"],"main":function(depth0,helpers,partials,data) {
+    return "<h1 id=\"right\">hello</h1>";
+}});
+Handlebars.registerPartial('otcsw_widgets_testing_impl_right', t);
+return t;
+});
+/* END_TEMPLATE */
+;
+
+csui.define('css!otcsw/widgets/testing/impl/testing',[],function(){});
+// An application widget is exposed via a RequireJS module
+csui.define('otcsw/widgets/testing/testing.view',[
+  "csui/lib/underscore", // Cross-browser utility belt
+  "csui/lib/marionette", // MVC application support
+  "csui/lib/jquery",
+  "otcsw/widgets/testing/impl/testing.model.factory", // Factory for the data model
+  "i18n!otcsw/widgets/testing/impl/nls/lang", // Use localizable texts
+  "hbs!otcsw/widgets/testing/impl/testing", // Template to render the HTML
+  "hbs!otcsw/widgets/testing/impl/left",
+  "hbs!otcsw/widgets/testing/impl/right",
+  "css!otcsw/widgets/testing/impl/testing", // Stylesheet needed for this view
+], function (_, Marionette, $, TestingModelFactory, lang, template, lefttemplate, Righttemplate) {
+  "use strict";
+  var LeftView =  Marionette.ItemView.extend({
+    className: "otcsw--left panel panel-default",
+    template: lefttemplate,
+  });
+
+  var RightView =  Marionette.ItemView.extend({
+    className: "otcsw--right panel panel-default",
+    template: Righttemplate,
+  });
+
+  var TestingView = Marionette.LayoutView.extend({
+    className: "otcsw--testing panel panel-default",
+    template: template,
+    regions: {
+      leftRegion: '#leftRegion',
+      rightRegion: '#rightRegion'
+    },
+    ui: {
+      button: ".myCollapseBtn",
+    },
+    events: {
+      "click @ui.button": "onClickedButton",
+    },
+    onClickedButton: function(){
+      this.$('.column1').toggle();
+  
+      //this.$( ".otcsw--testing panel panel-default" ).removeClass( this.$(".column2") );
+
+      //  this.$('.otcsw--left panel panel-default').toggleClass( className, addOrRemove );
+      //   if ( addOrRemove ) {
+      //     $( "#" ).addClass( className );
+      //   } else {
+      //     $( "#foo" ).removeClass( className );
+      //   }
+    },
+    onRender: function() {
+      this.showChildView('leftRegion', new LeftView());
+      this.showChildView('rightRegion', new RightView());
+    }
+  });
+
+  return TestingView;
+});
+
+
+csui.define('json!otcsw/widgets/testing/testing.manifest.json',{
+  "$schema": "http://opentext.com/cs/json-schema/draft-04/schema#",
+  "title": "testing",
+  "description": "Welcomes the current user.",
+  "kind": "fullpage",
+  "schema": {
+    "type": "object",
+    "properties": {}
+  }
+}
+);
+
 // Placeholder for the build target file; the name must be the same,
 // include public modules from this component
 
 csui.define('bundles/otcsw-all',[
   // add public files for this module here
   'otcsw/widgets/noteview/noteview.view',
-  'json!otcsw/widgets/noteview/noteview.manifest.json'
+  'json!otcsw/widgets/noteview/noteview.manifest.json',
+  "otcsw/widgets/testing/testing.view",
+  'json!otcsw/widgets/testing/testing.manifest.json',
 ], {});
 
 csui.require([
