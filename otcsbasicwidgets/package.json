@@ -7,7 +7,7 @@
     "connect": "^3.6.3",
     "cors": "^2.8.4",
     "grunt-contrib-watch": "^1.1.0",
-    "handlebars": "^4.0.10",
+    "handlebars": "^4.7.7",
     "morgan": "^1.8.2",
     "serve-index": "^1.9.0",
     "serve-markdown": "^1.1.0",
